@@ -21,10 +21,7 @@ describe("Lottery", function () {
   this.beforeEach(async function () {
     accounts = await ethers.getSigners();
 
-    [lotteryFactory, tokenContractFactory] = await Promise.all([
-      ethers.getContractFactory("Lottery"),
-      ethers.getContractFactory("BetToken"),
-    ]);
+    lotteryFactory = await ethers.getContractFactory("Lottery");
     lotteryContract = await lotteryFactory.deploy(
       "BetToken",
       "BET",
@@ -34,7 +31,7 @@ describe("Lottery", function () {
     );
     await lotteryContract.deployed();
 
-    const tokenContract = await lotteryContract.paymentToken();
+    let tokenContract = await lotteryContract.paymentToken();
   });
 
   describe("When the Lottery Contract is deployed", async () => {
