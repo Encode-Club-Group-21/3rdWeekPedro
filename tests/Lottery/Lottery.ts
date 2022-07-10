@@ -44,4 +44,14 @@ describe("Lottery", function () {
       // TODO
     });
   });
+
+  describe("When a user purchases an ERC20 from the token contract", async () => {
+    it("charges the correct amount of ETH", async () => {
+      // TOD
+    });
+
+    it("gives the correct amount of tokens", async () => {
+      // TODO
+    });
+  });
 });
