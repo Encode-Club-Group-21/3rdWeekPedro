@@ -8,8 +8,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 contract LotteryToken is ERC20, ERC20Burnable, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    // Wondering if I should add the ERC20permit, not sure what it does
-    constructor() ERC20("BetToken", "BET") {
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
     }

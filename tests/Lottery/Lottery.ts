@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 // eslint-disable-next-line node/no-missing-import
 // importing the Ballot contract from Typechain, (Typescript bindings for Ethereum smart contracts)
-import { Lottery, BetToken } from "../../typechain";
+import { Lottery } from "../../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // For token purchases
 import { BigNumber } from "ethers";
@@ -14,7 +14,6 @@ const BET_FEE = 1;
 
 describe("Lottery", function () {
   let lotteryContract: Lottery;
-  let tokenContract: BetToken;
   let lotteryFactory: any;
   let tokenContractFactory: any;
   let accounts: SignerWithAddress[];
@@ -26,11 +25,22 @@ describe("Lottery", function () {
       ethers.getContractFactory("Lottery"),
       ethers.getContractFactory("BetToken"),
     ]);
-    const lotteryFactory = await ethers.getContractFactory("Lottery");
-    lotteryContract = await lotteryFactory
-      .deploy
-      // Lottery contract arguments
-      ();
+    lotteryContract = await lotteryFactory.deploy(
+      "BetToken",
+      "BET",
+      DEFAULT_PURCHASE_RATIO,
+      ethers.utils.parseEther(BET_PRICE.toFixed(18)),
+      ethers.utils.parseEther(BET_FEE.toFixed(18))
+    );
     await lotteryContract.deployed();
+
+    tokenContract = await lotteryContract.paymentToken();
+  });
+
+  describe("When the Lottery Contract is deployed", async () => {
+    it("defines the ratio as provided in parameters", async () => {
+      const purchaseRatio = await lotteryContract.purchaseRatio();
+      expect(purchaseRatio).to.eq(DEFAULT_PURCHASE_RATIO);
+    });
   });
 });
