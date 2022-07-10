@@ -43,6 +43,47 @@ describe("Lottery", function () {
     it("uses a valid ERC20 as a payment token", async () => {
       // TODO
     });
+    it("has the correct bet price and bet fee as defined in parameters", async () => {});
+  });
+  describe("When a user purchases an ERC20", async () => {
+    it("charges the correct of ETH", async () => {
+      //TODO
+    });
+    it("send the correct amount of tokens", async () => {
+      //TODO
+    });
+  });
+  describe("When a user returns a ERC20", async () => {
+    it("charges the correct amount of ERC20", async () => {
+      //TODO
+    });
+    it("send the correct amount of eth", async () => {
+      //TODO
+    });
+  });
+  describe("When the owner opens the bets", async () => {
+    it("correctly sets the closing time ", async () => {
+      //TODO
+    });
+    it("is able to be closed", async () => {
+      //TODO
+    });
+    describe("When a user places a bet and bets are open", async () => {
+      it("correctly updates the ownerpool", async () => {
+        //TODO
+      });
+      it("correctly updates the prize pool", async () => {
+        //TODO
+      });
+      it("registers the bet in the slot array", async () => {
+        //TODO
+      });
+    });
+    describe("When a user places a bet and bets are closed", async () => {
+      it("fails if the bets are not open ", async () => {
+        //TODO
+      });
+    });
   });
 
   describe("When a user purchases an ERC20 from the token contract", async () => {
