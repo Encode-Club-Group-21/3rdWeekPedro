@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 // eslint-disable-next-line node/no-missing-import
-// importing the Ballot contract from Typechain, (Typescript bindings for Ethereum smart contracts)
+// importing the Lottery contract from Typechain, (Typescript bindings for Ethereum smart contracts)
 import { Lottery } from "../../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // For token purchases
@@ -34,13 +34,17 @@ describe("Lottery", function () {
     );
     await lotteryContract.deployed();
 
-    tokenContract = await lotteryContract.paymentToken();
+    const tokenContract = await lotteryContract.paymentToken();
   });
 
   describe("When the Lottery Contract is deployed", async () => {
     it("defines the ratio as provided in parameters", async () => {
       const purchaseRatio = await lotteryContract.purchaseRatio();
       expect(purchaseRatio).to.eq(DEFAULT_PURCHASE_RATIO);
+    });
+
+    it("uses a valid ERC20 as a payment token", async () => {
+      // TODO
     });
   });
 });
