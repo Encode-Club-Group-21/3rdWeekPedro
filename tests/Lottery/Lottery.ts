@@ -22,6 +22,10 @@ describe("Lottery", function () {
   this.beforeEach(async function () {
     accounts = await ethers.getSigners();
 
+    [lotteryFactory, tokenContractFactory] = await Promise.all([
+      ethers.getContractFactory("Lottery"),
+      ethers.getContractFactory("BetToken"),
+    ]);
     const lotteryFactory = await ethers.getContractFactory("Lottery");
     lotteryContract = await lotteryFactory
       .deploy
