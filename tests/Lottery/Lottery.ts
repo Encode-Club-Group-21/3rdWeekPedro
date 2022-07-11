@@ -52,7 +52,16 @@ describe("Lottery", function () {
       expect(symbol.length).to.be.greaterThan(0);
       expect(name.length).to.be.greaterThan(0);
     });
-    it("has the correct bet price and bet fee as defined in parameters", async () => {});
+    it("has the correct bet price and bet fee as defined in parameters", async () => {
+      const contractBetPrice = await lotteryContract.betPrice();
+      const contractBetFee = await lotteryContract.betFee();
+      expect(contractBetFee.toString()).to.eq(
+        ethers.utils.parseEther(BET_FEE.toString()).toString()
+      );
+      expect(contractBetPrice.toString()).to.eq(
+        ethers.utils.parseEther(BET_PRICE.toString()).toString()
+      );
+    });
   });
   describe("When a user purchases an ERC20", async () => {
     it("charges the correct of ETH", async () => {
