@@ -124,7 +124,7 @@ contract Lottery is Ownable {
     }
 
     /// @notice Withdraw `amount` from that accounts prize pool
-    function prizeWithdraw(uint256 amount) public {
+    function prizeWithdraw(uint256 amount) public{
         require(amount <= prize[msg.sender], "Not enough prize");
         prize[msg.sender] -= amount;
         paymentToken.transfer(msg.sender, amount);

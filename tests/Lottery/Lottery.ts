@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 // eslint-disable-next-line node/no-missing-import
 // importing the Lottery contract from Typechain, (Typescript bindings for Ethereum smart contracts)
-import { Lottery } from "../../typechain";
+import { Lottery, LotteryToken } from "../../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // For token purchases
 import { BigNumber } from "ethers";
@@ -17,6 +17,7 @@ describe("Lottery", function () {
   let lotteryFactory: any;
   let tokenContractFactory: any;
   let accounts: SignerWithAddress[];
+  let tokenContract: LotteryToken;
 
   this.beforeEach(async function () {
     accounts = await ethers.getSigners();
@@ -31,7 +32,11 @@ describe("Lottery", function () {
     );
     await lotteryContract.deployed();
 
-    let tokenContract = await lotteryContract.paymentToken();
+    const tokenContractAddress = await lotteryContract.paymentToken();
+    const tokenContractFactory = await ethers.getContractFactory(
+      "LotteryToken"
+    );
+    tokenContract = await tokenContractFactory.attach(tokenContractAddress);
   });
 
   describe("When the Lottery Contract is deployed", async () => {
@@ -41,47 +46,51 @@ describe("Lottery", function () {
     });
 
     it("uses a valid ERC20 as a payment token", async () => {
-      // TODO
+      const symbol = await tokenContract.symbol();
+      const name = await tokenContract.name();
+      console.log(symbol, name);
+      expect(symbol.length).to.be.greaterThan(0);
+      expect(name.length).to.be.greaterThan(0);
     });
     it("has the correct bet price and bet fee as defined in parameters", async () => {});
   });
   describe("When a user purchases an ERC20", async () => {
     it("charges the correct of ETH", async () => {
-      //TODO
+      // TODO
     });
     it("send the correct amount of tokens", async () => {
-      //TODO
+      // TODO
     });
   });
   describe("When a user returns a ERC20", async () => {
     it("charges the correct amount of ERC20", async () => {
-      //TODO
+      // TODO
     });
     it("send the correct amount of eth", async () => {
-      //TODO
+      // TODO
     });
   });
   describe("When the owner opens the bets", async () => {
     it("correctly sets the closing time ", async () => {
-      //TODO
+      // TODO
     });
     it("is able to be closed", async () => {
-      //TODO
+      // TODO
     });
     describe("When a user places a bet and bets are open", async () => {
       it("correctly updates the ownerpool", async () => {
-        //TODO
+        // TODO
       });
       it("correctly updates the prize pool", async () => {
-        //TODO
+        // TODO
       });
       it("registers the bet in the slot array", async () => {
-        //TODO
+        // TODO
       });
     });
     describe("When a user places a bet and bets are closed", async () => {
       it("fails if the bets are not open ", async () => {
-        //TODO
+        // TODO
       });
     });
   });
