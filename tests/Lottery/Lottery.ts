@@ -64,11 +64,34 @@ describe("Lottery", function () {
     });
   });
   describe("When a user purchases an ERC20", async () => {
-    it("charges the correct of ETH", async () => {
-      // TODO
+    let accountValue: BigNumber;
+    let txFee: BigNumber;
+    let tokensEarned: BigNumber;
+    const ETH_SPENT = 1;
+
+    beforeEach(async () => {
+      accountValue = await accounts[0].getBalance();
+      const purchaseTokenTx = await lotteryContract.purchaseTokens({
+        value: ethers.utils.parseEther(ETH_SPENT.toFixed(0)),
+      });
+      const purchaseTokenReceipt = await purchaseTokenTx.wait();
+      const gasUsed = await purchaseTokenReceipt.gasUsed;
+      const gasPrice = await purchaseTokenReceipt.effectiveGasPrice;
+      txFee = gasUsed.mul(gasPrice);
+      tokensEarned = await tokenContract.balanceOf(accounts[0].address);
+    });
+    it("charges the correct amount of ETH", async () => {
+      const currentAccountValue = await accounts[0].getBalance();
+      const ethSpent = accountValue.sub(currentAccountValue.add(txFee));
+      console.log(ethSpent);
+      expect(ethSpent).to.eq(ethers.utils.parseEther(ETH_SPENT.toFixed(0)));
     });
     it("send the correct amount of tokens", async () => {
-      // TODO
+      expect(
+        ethers.utils
+          .parseEther((ETH_SPENT / DEFAULT_PURCHASE_RATIO).toString())
+          .toString()
+      ).to.eq(tokensEarned.toString());
     });
   });
   describe("When a user returns a ERC20", async () => {
