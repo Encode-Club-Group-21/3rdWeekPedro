@@ -7,6 +7,7 @@ import { Lottery, LotteryToken } from "../../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 // For token purchases
 import { BigNumber } from "ethers";
+import { messagePrefix } from "@ethersproject/hash";
 
 const DEFAULT_PURCHASE_RATIO = 100;
 const BET_PRICE = 10;
@@ -95,11 +96,48 @@ describe("Lottery", function () {
     });
   });
   describe("When a user returns a ERC20", async () => {
+    let accountValue: BigNumber;
+    let txFeePurchase: BigNumber;
+    let txFeeReturn: BigNumber;
+    let txFeeApprove : BigNumber;
+    let tokensEarned: BigNumber;
+    let tokensReturned: BigNumber;
+    let tokenEndBalance: BigNumber;
+    const ETH_SPENT = 1;
+
+    beforeEach(async () => {
+      accountValue = await accounts[0].getBalance();
+      const purchaseTokenTx = await lotteryContract.purchaseTokens({
+        value: ethers.utils.parseEther(ETH_SPENT.toFixed(0)),
+      });
+      const purchaseTokenReceipt = await purchaseTokenTx.wait();
+      const gasUsedPurchase = await purchaseTokenReceipt.gasUsed;
+      const gasPricePurchase = await purchaseTokenReceipt.effectiveGasPrice;
+      txFeePurchase = gasUsedPurchase.mul(gasPricePurchase);
+      tokensEarned = await tokenContract.balanceOf(accounts[0].address);
+      const approveTx = await tokenContract.approve(lotteryContract.address,tokensEarned);
+      const approveReceipt = await approveTx.wait();
+      const gasUsedApprove = await approveReceipt.gasUsed;
+      const gasPriceApprove = await approveReceipt.effectiveGasPrice;
+      txFeeApprove = gasUsedApprove.mul(gasPriceApprove);
+      const returnTokenTx = await lotteryContract.returnTokens(tokensEarned);
+      const returnTokenReceipt = await returnTokenTx.wait();
+      const gasUsedReturn = await returnTokenReceipt.gasUsed;
+      const gasPriceReturn = await returnTokenReceipt.effectiveGasPrice;
+      txFeeReturn = gasUsedReturn.mul(gasPriceReturn);
+      tokenEndBalance = await tokenContract.balanceOf(accounts[0].address);
+      tokensReturned =  tokensEarned.sub(tokenEndBalance);
+    });
     it("charges the correct amount of ERC20", async () => {
-      // TODO
+      expect(
+        tokensEarned.toString()
+      ).to.eq(tokensReturned.toString())
     });
     it("send the correct amount of eth", async () => {
-      // TODO
+      const currentAccountValue = await accounts[0].getBalance();
+      const ethEarned = (currentAccountValue.add(txFeePurchase).add(txFeeApprove).add(txFeeReturn)).sub(accountValue);
+      // should receive the same amount of ETH back as we paid to mint the tokens (so net zero ETH in wallet)
+      expect(ethEarned).to.eq(0);
     });
   });
   describe("When the owner opens the bets", async () => {
