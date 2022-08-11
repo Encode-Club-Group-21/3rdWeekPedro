@@ -128,11 +128,13 @@ describe("Lottery", function () {
       tokenEndBalance = await tokenContract.balanceOf(accounts[0].address);
       tokensReturned =  tokensEarned.sub(tokenEndBalance);
     });
+// we should check the const 
     it("charges the correct amount of ERC20", async () => {
       expect(
         tokensEarned.toString()
       ).to.eq(tokensReturned.toString())
     });
+//need to run a double check on the amount of eth 
     it("send the correct amount of eth", async () => {
       const currentAccountValue = await accounts[0].getBalance();
       const ethEarned = (currentAccountValue.add(txFeePurchase).add(txFeeApprove).add(txFeeReturn)).sub(accountValue);
